@@ -8,15 +8,15 @@ function App() {
   });
 
   const onSubmit = async (data) => {
-    await fetch(`${process.env.REACT_APP_BASE_URL}/transaction`, {
-      method: "post",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((response) => {
-      console.log(response);
-    });
+    await axios
+      .post(`${process.env.REACT_APP_BASE_URL}/transaction`, data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        console.log(response);
+      });
   };
   return (
     <div>

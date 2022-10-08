@@ -1,10 +1,12 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import * as dotenv from "dotenv";
 /* declearing port */
-const PORT = 4000;
+dotenv.config();
+const PORT = process.env.APP_PORT || 4000;
 const app = express();
-// const router = express.Router();
+const router = express.Router();
 
 /* use cors to prevent client side error */
 app.use(cors());
@@ -13,18 +15,21 @@ app.use(cors());
 app.use(express.json());
 
 /* connecting to mongodb */
-// await mongoose.connect(
-//   `mongodb+srv://dharmapradhan2:SN9n2JyX0R@cluster0.qmwycxu.mongodb.net/?retryWrites=true&w=majority`
-// );
-// console.log("MongoDb is connected succesfully");
+await mongoose
+  .connect(
+    `mongodb+srv://${process.env.MONGODB_CRIDIENTIAL}/?retryWrites=true&w=majority`
+  )
+  .then(() => console.log("MongoDb is connected succesfully"))
+  .catch((err) => console.log("connection error"));
 
 app.get("/", (req, res) => {
   res.send("hello");
 });
 app.post("/transaction", (req, res) => {
-  console.log(req.body);
-  res.send("f");
+  const { amount, details, date } = req.body;
+  res.send({ amount, details, date });
 });
+
 app.listen(PORT, () => {
-  console.log("port is running");
+  console.log("port is running", PORT);
 });
