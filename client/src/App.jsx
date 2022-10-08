@@ -1,13 +1,19 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import moment from "moment";
+import axios from "axios";
 function App() {
   const { register, handleSubmit, getValues } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange",
   });
-  const onSubmit = (data, e) => console.log(data, e);
-  console.log(getValues("date"));
+
+  const onSubmit = async (data) => {
+    await axios
+      .post(`${process.env.REACT_APP_BASE_URL}/transaction`, data)
+      .then((response) => {
+        console.log(response);
+      });
+  };
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -15,14 +21,14 @@ function App() {
           type="number"
           placeholder="Enter transaction amount"
           {...register("amount", {
-            required: true,
+            required: false,
           })}
         />
         <input
           type="text"
           placeholder="Enter transaction details"
           {...register("details", {
-            required: true,
+            required: false,
           })}
         />
         <input
