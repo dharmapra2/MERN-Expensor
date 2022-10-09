@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import axios from "axios";
-import moment from "moment";
 import AppBar from "./Components/AppBar";
+import TransactionList from "./Components/TransactionList";
 
 function App() {
   const [AllTransaction, setAllTransaction] = useState([]);
-  const { register, handleSubmit, getValues, reset } = useForm({
+  const { register, handleSubmit, reset } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange",
   });
@@ -93,30 +93,8 @@ function App() {
           Submit
         </button>
       </form>
-      
-      <section className="table table-responsive-sm my-5">
-        <table className="table table-striped table-hover table-borderless table-primary align-middle text-center">
-          <thead className="table-dark">
-            <tr>
-              <th scope="col">Amount</th>
-              <th scope="col">Description</th>
-              <th scope="col">Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {AllTransaction?.map((items, index) => (
-              <tr className="table-primary" key={index}>
-                <td scope="row">{items?.amount}</td>
-                <td>{items?.description}</td>
-                <td>
-                  {items?.date ? moment(items?.date).format("DD-MM-Y") : ""}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-          <tfoot></tfoot>
-        </table>
-      </section>
+
+      <TransactionList AllTransaction={AllTransaction} />
     </div>
   );
 }
