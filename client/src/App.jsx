@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
+import AppBar from "./Components/AppBar";
 
 function App() {
   const [AllTransaction, setAllTransaction] = useState([]);
@@ -39,41 +41,72 @@ function App() {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <input
-          type="number"
-          placeholder="Enter transaction amount"
-          {...register("amount", {
-            required: false,
-          })}
-        />
-        <input
-          type="text"
-          placeholder="Enter transaction details"
-          {...register("details", {
-            required: false,
-          })}
-        />
-        <input
-          type="date"
-          defaultValue={getValues("date")}
-          {...register("date")}
-        />
-        <button type="submit">Submit</button>
+    <div className="bg-expensor-grey-15">
+      <>
+        <Router>
+          <AppBar />
+        </Router>
+      </>
+      <form className="row g-2 m-5" onSubmit={handleSubmit(onSubmit)}>
+        <div className="col-sm-3">
+          <div className="form-floating form-floating-sm">
+            <input
+              type="number"
+              className="form-control form-control-sm"
+              id="floatingInputGrid"
+              placeholder="Enter transaction amount"
+              {...register("amount", {
+                required: false,
+              })}
+            />
+            <label htmlFor="floatingInputGrid">Amount</label>
+          </div>
+        </div>
+        <div className="col-sm-3">
+          <div className="form-floating">
+            <input
+              type="text"
+              className="form-control form-control-sm"
+              id="floatingInputGrid"
+              placeholder="Enter Descrition"
+              {...register("details", {
+                required: false,
+              })}
+            />
+            <label htmlFor="floatingInputGrid">Descritption</label>
+          </div>
+        </div>
+        <div className="col-sm-3">
+          <div className="form-floating">
+            <input
+              type="date"
+              className="form-control form-control-sm"
+              id="floatingInputGrid"
+              {...register("date", {
+                required: false,
+              })}
+            />
+            <label htmlFor="floatingInputGrid">Date</label>
+          </div>
+        </div>
+        <button type="submit" className="col-sm-1 btn btn-sm btn-success">
+          Submit
+        </button>
       </form>
-      <br />
-      <section>
-        <table border={1}>
-          <thead>
-            <th>Amount</th>
-            <th>Description</th>
-            <th>Date</th>
+      
+      <section className="table table-responsive-sm my-5">
+        <table className="table table-striped table-hover table-borderless table-primary align-middle text-center">
+          <thead className="table-dark">
+            <tr>
+              <th scope="col">Amount</th>
+              <th scope="col">Description</th>
+              <th scope="col">Date</th>
+            </tr>
           </thead>
           <tbody>
             {AllTransaction?.map((items, index) => (
-              <tr key={index}>
-                <td>{items?.amount}</td>
+              <tr className="table-primary" key={index}>
+                <td scope="row">{items?.amount}</td>
                 <td>{items?.description}</td>
                 <td>
                   {items?.date ? moment(items?.date).format("DD-MM-Y") : ""}
@@ -81,6 +114,7 @@ function App() {
               </tr>
             ))}
           </tbody>
+          <tfoot></tfoot>
         </table>
       </section>
     </div>
