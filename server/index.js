@@ -3,6 +3,7 @@ import cors from "cors";
 import * as dotenv from "dotenv";
 import connectMongodb from "./DataBase/connection.js";
 import TransactionRoute from "./Routes/TransactionRoute.js";
+import AuthApi from "./Routes/AuthApi.js";
 import bodyParser from "body-parser";
 /* declearing port */
 dotenv.config();
@@ -22,6 +23,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/transaction", TransactionRoute);
+app.use("/auth", AuthApi);
 
 /* connecting to mongodb */
 await connectMongodb();
