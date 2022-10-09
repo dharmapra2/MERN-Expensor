@@ -4,7 +4,7 @@ function AppBar() {
   return (
     <nav className="navbar navbar-expand-sm navbar-dark bg-primary">
       <div className="container-fluid">
-        <NavLink className="navbar-brand text-dark" to="#">
+        <NavLink className="navbar-brand text-dark" to="/">
           Expensor App
         </NavLink>
         <button
@@ -21,7 +21,7 @@ function AppBar() {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav ms-auto mb--0">
             <div className="nav-link">Category</div>
-            <NavLink className="nav-link" to="/student">
+            <NavLink className="nav-link" to="/login">
               Login
             </NavLink>
           </ul>

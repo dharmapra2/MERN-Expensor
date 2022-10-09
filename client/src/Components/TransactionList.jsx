@@ -55,7 +55,12 @@ function TransactionList({
             "Your file has been deleted.",
             "success"
           );
-          setEditAllTransaction({});
+          setEditAllTransaction({
+            _id: "",
+            amount: null,
+            details: "",
+            date: new Date().now,
+          });
         } else if (result.dismiss === Swal.DismissReason.cancel) {
           swalWithBootstrapButtons.fire(
             "Cancelled",
