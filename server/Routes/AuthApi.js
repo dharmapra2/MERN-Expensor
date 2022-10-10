@@ -1,27 +1,53 @@
 import { Router } from "express";
+import bcrypt from "bcrypt";
 import User from "../Models/UserModal.js";
 const router = Router();
 
 router.post("/register", async (req, res) => {
   /* Inserting our requested data into the collection of User */
+  const { user_email, user_name, user_pwd } = req?.body;
+  if (!(user_email && user_name && user_pwd)) {
+    console.log(user_email, user_name, user_pwd);
+    return res.status(400).send({ error: "Data not formatted properly" });
+  }
+
   try {
-    const isAlreadyRegister = await User.find({
-      user_email: req.body?.user_email,
-    });
+    const isAlreadyRegister = await User.findOne({ user_email });
     console.log(isAlreadyRegister);
-    // const register = new User(req.body);
-    // await register.save();
-    res.status(201).json({ message: "Registration Successfull" }, req.body);
+    if (isAlreadyRegister) {
+      res.status(406).json({ warning: "User already exists" });
+      return;
+    }
+
+    const user = new User({ user_name, user_email, user_pwd });
+    /* encrypting the password using bcrypt */
+    const salt = await bcrypt.genSalt(14);
+    // now we set user password to hashed password
+    user.user_pwd = await bcrypt.hash(user_pwd, salt);
+    user
+      .save()
+      .then((doc) => res.status(201).json({ message: "User is created" }));
+    console.log(user);
   } catch (error) {
-    res.status(400).json({ message: "Failed" });
+    console.log("error", error);
+    res.status(400).json({ error: "Registration Failed", error });
   }
 });
 
-router.get("/", async (req, res) => {
-  /* fetching data from the collection of Transaction */
-  const transaction = await Transaction.find({}).sort({ createdAt: -1 });
-  // console.log(transaction);
-  res.json({ transaction });
+router.patch("/login", async (req, res) => {
+  const { user_email, user_pwd } = req.body;
+  const user = await User.findOne({ user_email });
+  if (user) {
+    // check user password with hashed password stored in the database
+    const validPassword = await bcrypt.compare(user_pwd, user.user_pwd);
+    if (validPassword) {
+      res.status(200).json({ message: "Login successfully" });
+    } else {
+      res.status(400).json({ error: "Invalid Password" });
+    }
+  } else {
+    res.status(401).json({ error: "User does not exist" });
+  }
 });
 
 export default router;

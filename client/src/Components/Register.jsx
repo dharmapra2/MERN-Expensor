@@ -1,12 +1,12 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import Swal from "sweetalert2";
 import axios from "axios";
 function Register() {
   const {
     register,
     handleSubmit,
-    setValue,
     reset,
     formState: { errors },
   } = useForm({
@@ -14,21 +14,54 @@ function Register() {
     reValidateMode: "onChange",
   });
   const onSubmit = async (data) => {
-    /*  for insert new record */
-    await axios
-      .post(`${process.env.REACT_APP_BASE_URL}/auth/register`, data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        console.log(response);
-        if (response?.status === 201) {
-          // console.log("data Saved");
-        }
-      });
-    // reset();
+    Swal.fire({
+      title: "Do you want to register?",
+      icon: "question",
+      confirmButtonText: "Sure",
+      denyButtonText: `Don't save`,
+      showCancelButton: true,
+      showLoaderOnConfirm: true,
+      preConfirm: async () => {
+        return await axios
+          .post(`${process.env.REACT_APP_BASE_URL}/auth/register`, data, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((response) => {
+            return response;
+          })
+          .catch((error) => {
+            return error;
+          });
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    }).then((res) => {
+      const result = res?.value;
+      if (result?.status === 201) {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "You successfully registred.",
+        });
+        reset();
+      } else if (result?.response?.status === 406) {
+        Swal.fire({
+          icon: "warning",
+          title: "Warning",
+          text: result?.response?.data?.warning ?? "Something went wrong!.",
+        });
+      } else if (result?.response?.status === 400) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops..",
+          text: result?.response?.data?.error ?? "Something went wrong!.",
+        });
+        reset();
+      }
+    });
   };
+
   return (
     <div className="container my-5">
       <h4 className="border-bottom border-info border-2 text-center">
@@ -45,7 +78,7 @@ function Register() {
                   id="user_name"
                   placeholder=" "
                   name="user_name"
-                  {...register("user_name", { required: true })}
+                  {...register("user_name", { required: false })}
                 />
                 {errors.user_name && (
                   <span className="text-danger float-start small">
@@ -63,7 +96,7 @@ function Register() {
                   id="user_email"
                   placeholder=" "
                   name="user_email"
-                  {...register("user_email", { required: true })}
+                  {...register("user_email", { required: false })}
                 />
                 {errors.user_email && (
                   <span className="text-danger float-start small">
@@ -84,7 +117,7 @@ function Register() {
                   placeholder=" "
                   name="user_pwd"
                   {...register("user_pwd", {
-                    required: true,
+                    required: false,
                     min: {
                       value: 8,
                       message:
