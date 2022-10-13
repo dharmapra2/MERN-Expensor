@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import axios from "axios";
+import Swal from "sweetalert2";
 import { NavLink } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
@@ -12,9 +14,37 @@ function LoginPage() {
     mode: "onSubmit",
     reValidateMode: "onChange",
   });
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    const fetchResult = await axios
+      .patch(`${process.env.REACT_APP_BASE_URL}/auth/login`, data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((result) => result?.response)
+      .catch((error) => error?.response);
+    if (fetchResult?.status === 200) {
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "You Login successfully.",
+      });
+      reset();
+    } else if (fetchResult?.status === 400) {
+      Swal.fire({
+        icon: "warning",
+        title: "Warning",
+        text: "Invalid Password!.",
+      });
+    } else if (fetchResult?.status === 401) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops..",
+        text: "User does not exist",
+      });
+    }
   };
+  
   return (
     <div className="container my-5">
       <h4 className="border-bottom border-info border-2 text-center">
@@ -26,19 +56,19 @@ function LoginPage() {
             <div className="col-sm">
               <div className="form-floating mb-1 p-0">
                 <input
-                  type="text"
+                  type="email"
                   className="form-control form-sm-control border-info"
-                  id="username"
+                  id="user_email"
                   placeholder=" "
                   name="user name"
-                  {...register("user_name", { required: true })}
+                  {...register("user_email", { required: true })}
                 />
-                {errors.user_name && (
+                {errors.user_email && (
                   <span className="text-danger float-start small">
-                    Username required
+                    Email is required
                   </span>
                 )}
-                <label htmlFor="username">Enter your user name</label>
+                <label htmlFor="user_email">Enter your email address</label>
               </div>
             </div>
           </div>

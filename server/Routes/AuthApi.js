@@ -1,5 +1,6 @@
 import { Router } from "express";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import User from "../Models/UserModal.js";
 const router = Router();
 
@@ -13,7 +14,7 @@ router.post("/register", async (req, res) => {
 
   try {
     const isAlreadyRegister = await User.findOne({ user_email });
-    console.log(isAlreadyRegister);
+    // console.log(isAlreadyRegister);
     if (isAlreadyRegister) {
       res.status(406).json({ warning: "User already exists" });
       return;
@@ -36,12 +37,16 @@ router.post("/register", async (req, res) => {
 
 router.patch("/login", async (req, res) => {
   const { user_email, user_pwd } = req.body;
-  const user = await User.findOne({ user_email });
+  const user = await User.findOne({ user_email: user_email });
   if (user) {
+    /* creatig an authontication token by JWT */
+    const token = jwt.sign({}, "Dharma");
+    console.log(token);
+
     // check user password with hashed password stored in the database
-    const validPassword = await bcrypt.compare(user_pwd, user.user_pwd);
+    const validPassword = await bcrypt.compareSync(user_pwd, user.user_pwd);
     if (validPassword) {
-      res.status(200).json({ message: "Login successfully" });
+      res.status(200).json({ message: "Login successfully", token });
     } else {
       res.status(400).json({ error: "Invalid Password" });
     }
