@@ -39,9 +39,13 @@ router.patch("/login", async (req, res) => {
   const { user_email, user_pwd } = req.body;
   const user = await User.findOne({ user_email: user_email });
   if (user) {
+    const payload = {
+      username: user_email,
+      id: user._id,
+    };
+
     /* creatig an authontication token by JWT */
-    const token = jwt.sign({}, "Dharma");
-    console.log(token);
+    const token = jwt.sign(payload, "secret key");
 
     // check user password with hashed password stored in the database
     const validPassword = await bcrypt.compareSync(user_pwd, user.user_pwd);

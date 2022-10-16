@@ -33,8 +33,13 @@ function Home() {
   }, [editTransaction, setValue]);
 
   const fetchTransaction_Data = async () => {
+    const token = localStorage.getItem("token") ?? "";
     await axios
-      .get(`${process.env.REACT_APP_BASE_URL}/transaction`)
+      .get(`${process.env.REACT_APP_BASE_URL}/transaction`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => setAllTransaction(response?.data?.transaction));
   };
 
@@ -81,7 +86,6 @@ function Home() {
         .then((response) => {
           if (response?.status === 201) {
             fetchTransaction_Data();
-            // console.log("data Saved");
           }
         });
     }

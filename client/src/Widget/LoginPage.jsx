@@ -1,10 +1,12 @@
 import React from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 function LoginPage() {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -21,30 +23,34 @@ function LoginPage() {
           "Content-Type": "application/json",
         },
       })
-      .then((result) => result?.response)
+      .then((result) => result)
       .catch((error) => error?.response);
     if (fetchResult?.status === 200) {
+      localStorage.setItem("token", fetchResult?.data?.token ?? "");
       Swal.fire({
         icon: "success",
         title: "Success",
         text: "You Login successfully.",
       });
       reset();
+      navigate("/");
     } else if (fetchResult?.status === 400) {
       Swal.fire({
         icon: "warning",
         title: "Warning",
         text: "Invalid Password!.",
       });
+      localStorage.removeItem("token");
     } else if (fetchResult?.status === 401) {
       Swal.fire({
         icon: "error",
         title: "Oops..",
         text: "User does not exist",
       });
+      localStorage.removeItem("token");
     }
   };
-  
+
   return (
     <div className="container my-5">
       <h4 className="border-bottom border-info border-2 text-center">

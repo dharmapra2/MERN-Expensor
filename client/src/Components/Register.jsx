@@ -1,9 +1,10 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import axios from "axios";
 function Register() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -45,6 +46,7 @@ function Register() {
           text: "You successfully registred.",
         });
         reset();
+        navigate("/");
       } else if (result?.response?.status === 406) {
         Swal.fire({
           icon: "warning",
