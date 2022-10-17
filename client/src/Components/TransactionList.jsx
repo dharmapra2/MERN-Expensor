@@ -15,6 +15,8 @@ function TransactionList({
   };
 
   const deleteItem = async (data) => {
+    const token = localStorage.getItem("token") ?? "";
+
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-success",
@@ -35,7 +37,11 @@ function TransactionList({
         showLoaderOnConfirm: true,
         preConfirm: async (_login) => {
           return await axios
-            .delete(`${process.env.REACT_APP_BASE_URL}/transaction/${data}`)
+            .delete(`${process.env.REACT_APP_BASE_URL}/transaction/${data}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
             .then((response) => {
               return response;
             })

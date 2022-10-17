@@ -8,7 +8,7 @@ router.post("/register", async (req, res) => {
   /* Inserting our requested data into the collection of User */
   const { user_email, user_name, user_pwd } = req?.body;
   if (!(user_email && user_name && user_pwd)) {
-    console.log(user_email, user_name, user_pwd);
+    // console.log(user_email, user_name, user_pwd);
     return res.status(400).send({ error: "Data not formatted properly" });
   }
 
@@ -28,7 +28,7 @@ router.post("/register", async (req, res) => {
     user
       .save()
       .then((doc) => res.status(201).json({ message: "User is created" }));
-    console.log(user);
+    // console.log(user);
   } catch (error) {
     console.log("error", error);
     res.status(400).json({ error: "Registration Failed", error });

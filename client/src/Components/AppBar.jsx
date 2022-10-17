@@ -1,6 +1,11 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, redirect } from "react-router-dom";
 function AppBar() {
+  const token = localStorage.getItem("token");
+  const clearLocalStogare = () => {
+    localStorage.clear();
+    redirect("/login");
+  };
   return (
     <nav className="navbar navbar-expand-sm navbar-dark bg-primary">
       <div className="container-fluid">
@@ -21,9 +26,18 @@ function AppBar() {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav ms-auto mb--0">
             <div className="nav-link">Category</div>
-            <NavLink className="nav-link" to="/login">
-              Login
-            </NavLink>
+            {token ? (
+              <button
+                className="btn btn-sm btn-danger"
+                onClick={() => clearLocalStogare()}
+              >
+                Logout
+              </button>
+            ) : (
+              <NavLink className="nav-link" to="/login">
+                Login
+              </NavLink>
+            )}
           </ul>
         </div>
       </div>

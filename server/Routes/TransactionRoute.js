@@ -16,7 +16,7 @@ router.post(
         date,
       });
       await transaction.save();
-      // console.log(transaction);
+      console.log(transaction);
       res.status(201).json({ message: "Success" });
     } catch (error) {
       res.status(400).json({ message: "Failed" });
@@ -61,6 +61,7 @@ router.patch(
         { _id: req.params?.id },
         { $set: req.body }
       );
+      console.log(transaction);
       res.status(200).json({ message: "updated successfully" });
     } catch (error) {
       res.status(400).json({ message: "Failed" });

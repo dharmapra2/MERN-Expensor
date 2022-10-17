@@ -18,7 +18,7 @@ function Home() {
     reValidateMode: "onChange",
     defaultValues: editTransaction,
   });
-
+  const token = localStorage.getItem("token") ?? "";
   /* update form value on click edit button */
   useMemo(() => {
     setValue("_id", editTransaction?._id);
@@ -33,7 +33,6 @@ function Home() {
   }, [editTransaction, setValue]);
 
   const fetchTransaction_Data = async () => {
-    const token = localStorage.getItem("token") ?? "";
     await axios
       .get(`${process.env.REACT_APP_BASE_URL}/transaction`, {
         headers: {
@@ -81,6 +80,7 @@ function Home() {
         .post(`${process.env.REACT_APP_BASE_URL}/transaction`, data, {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {
